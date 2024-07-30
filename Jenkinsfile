@@ -25,7 +25,7 @@ pipeline {
 
         stage("Docker Build and Push to ECR") {
             steps {
-                withCredentials([aws(credentialsId: 'aws-credentials')]) {
+                withCredentials([aws(credentialsId: 'Credentials')]) {
                     script {
                         // Build the Docker image
                         sh "docker build -t ${ECR_REPO_URI}:latest ."
