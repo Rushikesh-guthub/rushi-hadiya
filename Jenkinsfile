@@ -8,6 +8,7 @@ pipeline {
         CLUSTER_NAME = 'hadiya-dev-frontend-cluster'
         SERVICE_NAME = 'hadiya-frontend-service'
         CONTAINER_NAME = 'hadiya-dev-frontend'
+        AWS_CREDENTIALS_ID = 'Credentials'
     }
 
     stages {
@@ -19,13 +20,13 @@ pipeline {
 
         stage('Checkout from Git') {
             steps {
-                git branch: 'dev', url: 'https://github.com/Himanshu-0711/hadiya-front/'
+                git branch: 'main', url: 'https://github.com/Himanshu-0711/hadiya-front/'
             }
         }
 
         stage('Docker Build and Push to ECR') {
             steps {
-                withCredentials([aws(credentialsId: 'Credentials')]) {
+                  withCredentials([aws(credentialsId: AWS_CREDENTIALS_ID)]) {
                     script {
                         // Set AWS credentials as environment variables
                         env.AWS_ACCESS_KEY_ID = credentials('Credentials').accessKey
@@ -46,7 +47,7 @@ pipeline {
 
         stage('Register Task Definition Revision') {
             steps {
-                withCredentials([aws(credentialsId: 'Credentials')]) {
+                  withCredentials([aws(credentialsId: AWS_CREDENTIALS_ID)]) {
                     script {
                         // Set AWS credentials as environment variables
                         env.AWS_ACCESS_KEY_ID = credentials('Credentials').accessKey
@@ -108,7 +109,7 @@ pipeline {
 
         stage('Update ECS Service') {
             steps {
-                withCredentials([aws(credentialsId: 'Credentials')]) {
+                 withCredentials([aws(credentialsId: AWS_CREDENTIALS_ID)]) {
                     script {
                         // Set AWS credentials as environment variables
                         env.AWS_ACCESS_KEY_ID = credentials('Credentials').accessKey
