@@ -25,7 +25,7 @@ pipeline {
 
         stage("Docker Build and Push to ECR") {
             steps {
-                withAWS(credentials: 'Credentials', region: "${AWS_REGION}") {
+                withCredentials([aws(credentialsId: 'Credentials')]) {
                     script {
                         // Build the Docker image
                         sh "docker build -t ${ECR_REPO_URI}:latest ."
@@ -42,7 +42,7 @@ pipeline {
 
         stage('Register Task Definition Revision') {
             steps {
-                withAWS(credentials: 'Credentials', region: "${AWS_REGION}") {
+                 withCredentials([aws(credentialsId: 'Credentials')]) {
                     script {
                         def taskDefinitionJson = """
                         {
