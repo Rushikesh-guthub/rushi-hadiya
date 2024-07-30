@@ -56,10 +56,10 @@ pipeline {
                                     "cpu": 0,
                                     "portMappings": [
                                         {
-                                            "containerPort": 3000,
-                                            "hostPort": 3000,
+                                            "containerPort": 80,
+                                            "hostPort": 80,
                                             "protocol": "tcp",
-                                            "name": "node",
+                                            "name": "nginx",
                                             "appProtocol": "http"
                                         }
                                     ],
