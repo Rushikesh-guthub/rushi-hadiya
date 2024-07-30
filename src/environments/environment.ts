@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiGatewayURL: 'http://hadiya-backend-alb-1512806879.us-east-1.elb.amazonaws.com'
+  apiGatewayURL: 'http://backend-lb-2142802251.us-east-1.elb.amazonaws.com/'
 };
 
 /*
