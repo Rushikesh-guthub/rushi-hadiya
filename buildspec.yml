@@ -3,7 +3,7 @@ version: 0.2
 env:
   variables:
     AWS_DEFAULT_REGION: "us-east-1"  # Set your AWS region here
-    REPOSITORY_NAME: "	hadiya-dev-frontend"  # Set your ECR repository name here
+    REPOSITORY_NAME: "hadiya-dev-frontend"  # Set your ECR repository name here
     GIT_COMMIT: $(git log -1 --pretty=format:%h)  # Fetches the short commit hash as the tag
     IMAGE_TAG: $GIT_COMMIT  # Use the commit hash as the image tag
     AWS_ACCOUNT_ID: !Sub "${AWS::AccountId}"
