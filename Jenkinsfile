@@ -42,7 +42,6 @@ pipeline {
 
         stage('Register Task Definition Revision') {
             steps {
-                withCredentials([aws(CredentialsId: 'Credentials')]) {
                     script {
                         def taskDefinitionJson = """
                         {
@@ -93,7 +92,6 @@ pipeline {
                         // Register a new task definition revision
                         def registerTaskDefCmd = "aws ecs register-task-definition --cli-input-json '${taskDefinitionJson.replaceAll("'", "\\\\'")}' --region ${AWS_REGION}"
                         sh script: registerTaskDefCmd
-                    }
                 }
             }
         }
