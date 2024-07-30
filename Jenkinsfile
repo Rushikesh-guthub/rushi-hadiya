@@ -23,10 +23,14 @@ pipeline {
             }
         }
 
-        stage("Docker Build and Push to ECR") {
+        stage('Docker Build and Push to ECR') {
             steps {
                 withCredentials([aws(credentialsId: 'Credentials')]) {
                     script {
+                        // Set AWS credentials as environment variables
+                        env.AWS_ACCESS_KEY_ID = credentials('Credentials').accessKey
+                        env.AWS_SECRET_ACCESS_KEY = credentials('Credentials').secretKey
+
                         // Build the Docker image
                         sh "docker build -t ${ECR_REPO_URI}:latest ."
                         
@@ -42,8 +46,12 @@ pipeline {
 
         stage('Register Task Definition Revision') {
             steps {
-                 withCredentials([aws(credentialsId: 'Credentials')]) {
+                withCredentials([aws(credentialsId: 'Credentials')]) {
                     script {
+                        // Set AWS credentials as environment variables
+                        env.AWS_ACCESS_KEY_ID = credentials('Credentials').accessKey
+                        env.AWS_SECRET_ACCESS_KEY = credentials('Credentials').secretKey
+
                         def taskDefinitionJson = """
                         {
                             "family": "${TASK_DEFINITION_NAME}",
@@ -100,8 +108,12 @@ pipeline {
 
         stage('Update ECS Service') {
             steps {
-                withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
+                withCredentials([aws(credentialsId: 'Credentials')]) {
                     script {
+                        // Set AWS credentials as environment variables
+                        env.AWS_ACCESS_KEY_ID = credentials('Credentials').accessKey
+                        env.AWS_SECRET_ACCESS_KEY = credentials('Credentials').secretKey
+
                         // Get the new task definition ARN
                         def newTaskDefinitionArn = sh(script: "aws ecs describe-task-definition --task-definition ${TASK_DEFINITION_NAME} --region ${AWS_REGION} | jq -r '.taskDefinition.taskDefinitionArn'", returnStdout: true).trim()
 
