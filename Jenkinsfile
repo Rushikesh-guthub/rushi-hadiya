@@ -1,4 +1,4 @@
-pipeline {
+\pipeline {
     agent any
 
     environment {
@@ -25,7 +25,7 @@ pipeline {
 
         stage("Docker Build and Push to ECR") {
             steps {
-                withCredentials([aws(credentialsId: 'Credentials')]) {
+                withAWS(credentials: 'Credentials', region: "${AWS_REGION}") {
                     script {
                         // Build the Docker image
                         sh "docker build -t ${ECR_REPO_URI}:latest ."
@@ -42,6 +42,7 @@ pipeline {
 
         stage('Register Task Definition Revision') {
             steps {
+                withAWS(credentials: 'Credentials', region: "${AWS_REGION}") {
                     script {
                         def taskDefinitionJson = """
                         {
@@ -92,13 +93,14 @@ pipeline {
                         // Register a new task definition revision
                         def registerTaskDefCmd = "aws ecs register-task-definition --cli-input-json '${taskDefinitionJson.replaceAll("'", "\\\\'")}' --region ${AWS_REGION}"
                         sh script: registerTaskDefCmd
+                    }
                 }
             }
         }
 
         stage('Update ECS Service') {
             steps {
-                withCredentials([aws(credentialsId: 'aws-credentials')]) {
+                withAWS(credentials: 'aws-credentials', region: "${AWS_REGION}") {
                     script {
                         // Get the new task definition ARN
                         def newTaskDefinitionArn = sh(script: "aws ecs describe-task-definition --task-definition ${TASK_DEFINITION_NAME} --region ${AWS_REGION} | jq -r '.taskDefinition.taskDefinitionArn'", returnStdout: true).trim()
