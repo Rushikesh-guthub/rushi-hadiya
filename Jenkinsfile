@@ -42,7 +42,7 @@ pipeline {
 
         stage('Register Task Definition Revision') {
             steps {
-                withCredentials([aws(Credentials: 'Credentials')]) {
+                withCredentials([aws(CredentialsId: 'Credentials')]) {
                     script {
                         def taskDefinitionJson = """
                         {
